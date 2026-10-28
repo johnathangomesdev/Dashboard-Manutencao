@@ -38,9 +38,8 @@
 
             <div class="container">
                 <div>
-                    <label for="ficheiroExcel">Importar Excel (.xlsx)</label>
-                    <input id="ficheiroExcel" type="file" accept=".xlsx,.xls" onchange="importarExcel(this.files[0]); this.value='';">
-                    <button type="button" onclick="exportarExcelAutomatico()">Exportar Excel</button>
+                    <label class="file-picker-button" for="ficheiroExcel">Importar Excel (.xlsx) <input id="ficheiroExcel" type="file" accept=".xlsx,.xls" onchange="importarExcel(this.files[0]); this.value='';"></label>
+                    <button type="button" class="export-button" onclick="exportarExcelAutomatico()">Exportar Excel</button>
                 </div>
 
                 <div class="filter-row">
