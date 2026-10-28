@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Manutenção</title>
+
+<!-- BIBLIOTECAS CORRETAS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div id="mensagemSistema" class="alerta-sucesso" style="display:none;"></div>
+
+
+<div class="layout">
+
+    <!-- MENU -->
+    <div class="sidebar">
+        <h3>Menu</h3>
+        <a href="#" onclick="mostrarPagina('dashboard'); return false;">Dashboard</a>
+        <a href="#" onclick="mostrarPagina('manutencao'); return false;">Manutenção</a>
+        <a href="#" onclick="mostrarPagina('estoque'); return false;">Estoque</a>
+        <a href="#" onclick="mostrarPagina('configuracoes'); return false;">Equipamentos</a>
+    </div>
+
+    <div class="content">
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="page active">
+
+            <div class="header">
+                <h3>Dashboard de Manutenção</h3>
+            </div>
+
+            <div class="container">
+                <div>
+                    <label for="ficheiroExcel">Importar Excel (.xlsx)</label>
+                    <input id="ficheiroExcel" type="file" accept=".xlsx,.xls" onchange="importarExcel(this.files[0]); this.value='';">
+                    <button type="button" onclick="exportarExcelAutomatico()">Exportar Excel</button>
+                </div>
+
+                <div class="filter-row">
+                    <div>
+                        <label>Visualização:</label>
+                        <select id="tipoVisualizacao">
+                            <option value="ano">Ano</option>
+                            <option value="mes">Mês</option>
+                            <option value="dia">Dia</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Ano:</label>
+                        <select id="anoFiltro"></select>
+                    </div>
+
+                    <div>
+                        <label>Mês:</label>
+                        <select id="mesFiltro"></select>
+                    </div>
+
+                    <div>
+                        <label>Dia:</label>
+                        <select id="diaFiltro"></select>
+                    </div>
+                </div>
+
+                <div class="cards">
+                    <div class="card kpi-duplo">
+                        <div>✅ Concluídas<br><b id="concluidas">0</b></div>
+                        <div class="kpi-separador">⏳ Pendentes<br><b id="pendentes">0</b></div>
+                    </div>
+
+                    <div class="card tempo-card">
+                        ⏱ Tempo de Resposta<br>
+                        <b id="tempoResposta">0h</b>
+                    </div>
+
+                    <div class="card meta-card">
+                        🎯 Concluídos x Meta<br>
+                        <input type="number" id="percentualMeta" value="70" min="0" max="100"> %
+
+                        <div class="meta-loading-box">
+                            <div id="metaTexto" class="meta-texto">Meta: 0 | Concluídas: 0</div>
+
+                            <div class="meta-progress-container">
+                                <div id="metaProgressBar" class="meta-progress-bar"></div>
+                            </div>
+
+                            <div id="metaProgressText" class="meta-progress-text">Faltam 100%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container big-chart">
+                    <canvas id="porDia"></canvas>
+                </div>
+
+                <div class="grid">
+                    <div class="chart-container small-chart"><canvas id="tipoIntervencao"></canvas></div>
+                    <div class="chart-container small-chart"><canvas id="tipoFalha"></canvas></div>
+                    <div class="chart-container small-chart"><canvas id="setor"></canvas></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class = "layout-principal">
+            <div class="conteudo-esquerda">
+                <!-- MANUTENÇÃO -->
+                <div id="manutencao" class="page">
+
+                    <div class="container">
+
+                        <div class="page-with-actions">
+
+                            <div class="main-area">
+                                <h3 class="page-title">Lista de Manutenções Pendentes</h3>
+
+                                <div class="container-manutencao">
+                                    <table id="tabelaManutencao">
+                                        <thead>
+                                            <tr>
+                                                <th onclick="ordenarLista('insercao')">Data e Hora de Inserção</th>
+                                                <th onclick="ordenarLista('conclusao')">Data e Hora de Conclusão</th>
+                                                <th onclick="ordenarLista('manutencao')">Manutenção</th>
+                                                <th onclick="ordenarLista('equipamento')">Equipamento</th>
+                                                <th onclick="ordenarLista('setor')">Setor</th>
+                                                <th onclick="ordenarLista('tipo')">Tipo de Manutenção</th>
+                                                <th onclick="ordenarLista('falha')">Tipo de Falha</th>
+                                                <th onclick="ordenarLista('estado')">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="action-panel">
+                                <div class="action-buttons">
+                                    <button onclick="abrirNovaManutencao()">+ Inserir</button>
+                                    <button class="btn-secondary" onclick="mostrarPagina('historico')">Histórico de Manutenção</button>
+                                </div>
+
+                                <label>Procurar na lista:</label>
+                                <input id="campoProcura" placeholder="Digite e clique em procurar">
+                                <button class="btn-search" onclick="procurarManutencao()">Procurar</button>
+                                <div class="botoes-acao">
+                                    <button id="btnEditar" style="display:none;" onclick="editarManutencao()">✏️ Editar</button>
+                                    <button id="btnDeletar" style="display:none;" onclick="deletarSelecionado()">🗑️ Deletar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- HISTÓRICO -->
+                <div id="historico" class="page">
+
+                <div class="container">
+
+                    <div class="page-with-actions">
+
+                        <div class="main-area">
+                            <h3 class="page-title">Histórico de Manutenção</h3>
+
+                            <div class="container-historico">
+                                <table id="tabelaHistorico">
+                                    <thead>
+                                        <tr>
+                                            <tr>
+                                                <th onclick="ordenarLista('insercao')">Data e Hora de Inserção</th>
+                                                <th onclick="ordenarLista('conclusao')">Data e Hora de Conclusão</th>
+                                                <th onclick="ordenarLista('manutencao')">Manutenção</th>
+                                                <th onclick="ordenarLista('equipamento')">Equipamento</th>
+                                                <th onclick="ordenarLista('setor')">Setor</th>
+                                                <th onclick="ordenarLista('tipo')">Tipo de Manutenção</th>
+                                                <th onclick="ordenarLista('falha')">Tipo de Falha</th>
+                                                <th onclick="ordenarLista('estado')">Estado</th>
+                                            </tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="action-panel">
+                            <button class="btn-secondary" onclick="mostrarPagina('manutencao')">Voltar</button>    
+                            <button id="btnEditarHistorico" style="display:none;" onclick="editarManutencao()">✏️ Editar</button>
+                            <button id="btnDeletarHistorico" style="display:none;" onclick="deletarSelecionado()">🗑️ Deletar</button>
+                        </div>
+
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div id="painelManutencao" class="painel-form" style="display:none;">
+
+                <h3>Manutenção</h3>
+                <label>Manutenção</label>
+                <input id="novoManutencao">
+
+                <!-- ✅ EQUIPAMENTO -->
+                <label>Equipamento</label>
+                <select id="novoEquipamento"></select>
+                <!-- ✅ SETOR -->
+                <label>Setor</label>
+                <select id="novoSetor" ></select>
+
+                <!-- ✅ TIPO -->
+                <label>Tipo</label>
+                <select id="novoTipo">
+                    <option value="">Tipo</option>
+                    <option>Corretiva</option>
+                    <option>Preventiva</option>
+                    <option>Melhoria</option>
+                </select>
+
+                <!-- ✅ FREQUÊNCIA -->
+                <label>Frequência</label>
+                <select id="novoFrequencia">
+                    <option value="">Frequência</option>
+                    <option>Diária</option>
+                    <option>Semanal</option>
+                    <option>Mensal</option>
+                    <option>Anual</option>
+                </select>
+                <!-- ✅ FALHA -->
+                <label>Falha</label>
+                <select id="novoFalha">
+                    <option value="">Selecione</option>
+                    <option>Mecânica</option>
+                    <option>Elétrica</option>
+                    <option>Hidráulica</option>
+                    <option>Pneumática</option>
+                </select> 
+                <!-- ✅ ESTADO -->
+                <label>Estado</label>
+                <select id="novoEstado">
+                    <option value="">Estado</option>
+                    <option>Concluído</option>
+                    <option>Pendente</option>
+                </select>
+
+                <!-- ✅ DATAS -->
+                <input type="datetime-local" id="novoHoraInicio">
+                <input type="datetime-local" id="novoHoraConclusao">
+                <!-- ✅ TIPO -->
+                <label>Tipo</label>
+
+
+
+                <!-- ✅ DESCRIÇÃO (ESTAVA A FALTAR) -->
+                <label>Descrição</label>
+                <textarea id="novoDescricao"></textarea>
+
+                <button onclick="guardarNovaManutencao()">Guardar</button>
+                <button onclick="fecharPainelManutencao()">Cancelar</button>
+
+            </div> 
+        </div>
+
+        <div id="novoItem" class="page">
+
+            <div class="container">
+                <h3 class="page-title">Novo Item</h3>
+
+                <form onsubmit="guardarItem(event)">
+
+                    <label>Item:</label><br>
+                    <input id="itemNome" required>
+
+                    <br><br>
+
+                    <label>Número Série:</label><br>
+                    <input id="itemSerie">
+
+                    <br><br>
+
+                    <label>Equipamento:</label><br>
+                    <input id="itemEquip">
+
+                    <br><br>
+
+                    <label>Local:</label><br>
+                    <input id="itemLocal">
+
+                    <br><br>
+
+                    <label>Quantidade:</label><br>
+                    <input type="number" id="itemQtd" required>
+
+                    <br><br>
+
+                    <button type="submit">Guardar</button>
+                    <button type="button" class="btn-secondary" onclick="mostrarPagina('estoque')">Cancelar</button>
+
+                </form>
+            </div>
+        </div>
+        <div id="estoque" class="page">
+
+            <div class="container">
+
+                <div class="page-with-actions">
+
+                    <div class="main-area">
+                        <h3 class="page-title">Estoque de Peças</h3>
+
+                        <div class="container-estoque">
+                            <table id="tabelaEstoque">
+                                <thead>
+                                    <tr>
+                                        <th onclick="ordenarLista('item')">Item</th>
+                                        <th>Número Série</th>
+                                        <th onclick="ordenarLista('equipamento')">Equipamento</th>
+                                        <th onclick="ordenarLista('local')">Item</th>
+                                        <th>Quantidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="action-panel">
+                        <button onclick="abrirNovoItem()">+ Inserir</button>
+                        <button onclick="editarItem()">✏️ Editar</button>
+                        <button class="btn-danger" onclick="deletarItem()">🗑️ Deletar</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        
+        <div id="configuracoes" class="page">
+
+            <h2>Equipamentos</h2>
+
+            <div class="equipamentos-layout">
+
+                <!-- ✅ LISTA -->
+                <div class="container-equipamentos">
+
+                    <table id="tabelaEquipamentos">
+                        <thead>
+                            <tr>
+                                <th>Equipamento</th>
+                                <th>Setor</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+
+                <!-- ✅ BOTÕES -->
+                <div class="action-panel">
+
+                    <button onclick="abrirModalEquipamento()">➕ Adicionar</button>
+                    <button onclick="editarEquipamento()">✏️ Editar</button>
+                    <button onclick="deletarEquipamento()">🗑️ Deletar</button>
+
+                    <div id="modalEquipamento" style="display:none;" class="painel-equipamento">
+
+                    <h3>Equipamento</h3>
+
+                    <input id="equipNome" placeholder="Nome do equipamento">
+                    <input id="equipSetor" placeholder="Setor">
+
+                    <button onclick="guardarEquipamento()">Guardar</button>
+                    <button onclick="fecharModalEquipamento()">Cancelar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>

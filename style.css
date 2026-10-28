@@ -1,0 +1,614 @@
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+/* LAYOUT PRINCIPAL */
+.layout {
+    display: flex;
+}
+
+/* MENU LATERAL */
+.sidebar {
+    width: 220px;
+    background: #1f3c88;
+    color: white;
+    height: 100vh;
+    padding: 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    margin: 5px 0;
+    background: #2c4aa0;
+    border-radius: 5px;
+}
+
+.sidebar a:hover {
+    background: #3e5fcc;
+}
+
+/* CONTEÚDO */
+.content {
+    margin-left: 220px;
+    flex: 1;
+    padding: 10px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.header {
+    background: #1f3c88;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+/* TÍTULOS MAIORES */
+.header h3,
+.page-title {
+    font-size: 2em;
+    margin: 10px 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 10px;
+}
+
+/* KPIS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.card {
+    background: white;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* NÚMEROS KPI MAIORES */
+.card b {
+    font-size: 2em;
+}
+
+.kpi-duplo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.kpi-separador {
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+}
+
+.tempo-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* META */
+.meta-card {
+    min-height: 170px;
+}
+
+.meta-card input {
+    max-width: 90px;
+    text-align: center;
+    padding: 5px;
+}
+
+.meta-loading-box {
+    margin-top: 10px;
+}
+
+.meta-texto {
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.meta-progress-container {
+    width: 100%;
+    height: 24px;
+    background: #e9ecef;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.meta-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff7f0e, #28a745);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.meta-progress-text {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+/* GRÁFICOS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.big-chart {
+    height: 35vh;
+    margin-top: 10px;
+}
+
+.small-chart {
+    height: 30vh;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* TABELA */
+.table-box {
+    background: white;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    overflow-x: auto; 
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 9px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #eef1f7;
+}
+
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+th.sortable:hover {
+    background: #dfe6f3;
+}
+
+tr.row-click {
+    cursor: pointer;
+}
+
+tr.row-click:hover {
+    background: #f1f4ff;
+}
+
+/* CORES POR ATRASO */
+.linha-amarela {
+    background: #fff3cd !important;
+}
+
+.linha-laranja {
+    background: #ffd8a8 !important;
+}
+
+.linha-vermelha {
+    background: #f8d7da !important;
+}
+
+/* PÁGINA MANUTENÇÃO */
+.page-with-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.main-area {
+    flex: 1;
+}
+
+
+.main-content {
+    flex: 1;                /* ✅ ocupa todo espaço restante */
+    padding: 20px;
+    overflow: hidden;
+    background: #f4f6f9;
+}
+
+
+.action-panel {
+    width: 260px;
+    background: white;
+    border-radius: 6px;
+    padding: 10px;
+    height: fit-content;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #1f3c88;
+    color: white;
+    margin: 3px;
+}
+
+button:hover {
+    background: #2c4aa0;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #b02a37;
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-secondary:hover {
+    background: #565e64;
+}
+
+.btn-search {
+    background: #28a745;
+}
+
+.btn-search:hover {
+    background: #218838;
+}
+
+input, select, textarea {
+    width: 100%;
+    max-width: 450px;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+input[type="file"] {
+    width: auto;
+    max-width: none;
+}
+
+textarea {
+    height: 100px;
+}
+
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+}
+
+.filter-row div {
+    min-width: 160px;
+}
+
+.recorrencia-box {
+    display: none;
+    background: white;
+    border-left: 4px solid #1f3c88;
+    padding: 10px;
+    max-width: 450px;
+    border-radius: 6px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 800px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    .layout {
+        display: block;
+    }
+
+    .page-with-actions {
+        display: block;
+    }
+
+    .action-panel {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .action-buttons {
+        display: block;
+    }
+}
+.alerta-sucesso {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 9999;
+}
+.container-equipamentos {
+
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 6px;
+
+    height: 80%;   /* 👈 controla quantos itens aparecem */
+    overflow-y: auto;    /* 👈 ativa scroll vertical */
+}
+
+#tabelaEquipamentos {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabelaEquipamentos th,
+#tabelaEquipamentos td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+#tabelaEquipamentos thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+
+#tabelaEquipamentos tr:hover {
+    background: #f0f4ff;
+    cursor: pointer;
+}
+
+
+.page {
+    height: 100%;
+    display: none;
+}
+
+
+.page.active {
+    display: block;
+}
+
+
+.equipamentos-layout {
+    display: flex;
+    gap: 20px;
+    height: calc(100% - 60px); /* ✅ adapta ao título */
+}
+
+
+.container-equipamentos {
+    flex: 2;
+}
+
+.botoes-equipamentos {
+    flex: 1;
+}
+
+.painel-form {
+
+    margin-top: 15px;
+    padding: 15px;
+
+    background: #f8f9fc;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.linha-selecionada {
+    background: #dfe6f3 !important;
+}
+
+.container-historico {
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+
+    height: 65vh;      /* ✅ ocupa espaço da página */
+    overflow-y: auto;  /* ✅ ativa scroll */
+}
+
+#tabelaHistorico {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabelaHistorico th,
+#tabelaHistorico td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+#tabelaHistorico thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+
+.container-manutencao {
+
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 1px;
+
+    height: 65vh;      /* ✅ ocupa altura da página */
+    overflow-y: auto;  /* ✅ ativa scroll interno */
+}
+
+#tabelaManutencao {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabelaManutencao th,
+#tabelaManutencao td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+#tabelaManutencao thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
+
+#tabelaManutencao tr:hover {
+    background: #f0f4ff;
+    cursor: pointer;
+}
+
+
+.botoes-acao {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.layout-principal {
+    display: flex;
+    gap: 20px;
+}
+
+/* 🔴 lado esquerdo (tabelas) */
+.conteudo-esquerda {
+    flex: 3;
+}
+
+/* 🟢 lateral */
+.action-panel {
+    flex: 1;
+}
+
+/* 🔵 painel abaixo de tudo */
+#painelManutencao {
+    margin-top: 20px;
+    width: 100%;
+}
+
+
+.container-manutencao,
+.container-historico {
+    padding-top: 0;  
+}
+
+#tabelaManutencao,
+#tabelaHistorico {
+    margin-top: 0;  
+}
+
+#tabelaManutencao thead,
+#tabelaHistorico thead {
+    margin-top: 0;
+}
+
+
+#tabelaManutencao tbody tr,
+#tabelaHistorico tbody tr {
+    cursor: pointer;
+}
+
+#tabelaManutencao tbody tr:hover,
+#tabelaHistorico tbody tr:hover {
+    background: #f0f4ff;
+}
+
+
+#tabelaManutencao th,
+#tabelaHistorico th {
+    cursor: pointer;
+}
+
+#tabelaManutencao th:hover,
+#tabelaHistorico th:hover {
+    background: #e6ebff;
+}
+
+.container-estoque {
+    max-height: 650px;   /* ajusta como quiseres */
+    overflow-y: auto;
+}
+
+.container-estoque thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+}
