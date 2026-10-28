@@ -612,3 +612,37 @@ textarea {
     background: white;
     z-index: 1;
 }
+
+
+/* Ajustes de layout, botões e animações do dashboard */
+html, body { width: 100%; min-height: 100%; }
+body { min-height: 100vh; height: 100vh; overflow-x: hidden; }
+.layout { display: flex; width: 100%; min-height: 100vh; }
+.content { width: calc(100% - 220px); min-width: 0; flex: 1 1 auto; }
+#dashboard, #dashboard > .container { width: 100%; max-width: none; }
+#dashboard > .container { margin: 0; padding: 10px; }
+.container { max-width: none; width: 100%; }
+
+.file-picker-button {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 15px; margin: 3px; border: 0; border-radius: 5px;
+    background: #1f3c88; color: #fff; cursor: pointer; font: inherit;
+    line-height: normal;
+}
+.file-picker-button:hover { background: #2c4aa0; }
+.file-picker-button input[type="file"] {
+    display: inline-block; width: auto; max-width: min(360px, 45vw);
+    margin: 0; padding: 0; color: #fff; font: inherit;
+}
+.export-button { margin: 3px; }
+
+/* A barra de meta deixa de animar; as animações dos gráficos são mantidas */
+.meta-progress-bar { transition: none !important; }
+
+@media (max-width: 800px) {
+    body { height: auto; min-height: 100vh; }
+    .layout { display: block; }
+    .content { width: 100%; }
+    .file-picker-button { flex-wrap: wrap; }
+    .file-picker-button input[type="file"] { max-width: 100%; }
+}
